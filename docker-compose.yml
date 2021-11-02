@@ -3,10 +3,27 @@ services:
   app:
     build:
       context: .
-      dockerfile: ./Docker/golang/Dockerfile
+      dockerfile: ./docker/golang/Dockerfile
     tty: true
     ports:
       - 8080:8080
     volumes:
       - .:/go/src
     command: /bin/bash
+    depends_on:
+      - db
+
+  db:
+    build:
+      context: .
+      dockerfile: ./docker/mysql/Dockerfile
+    ports:
+      - 3306:3306
+    volumes:
+      - ./docker/mysql/data:/var/lib/mysql
+      - ./docker/mysql/log:/var/log/mysql
+      - ./docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_ROOT_PASSWORD: ${DB_PASS}
+      TZ: Asia/Tokyo

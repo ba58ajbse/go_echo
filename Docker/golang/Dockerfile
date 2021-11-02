@@ -19,7 +19,5 @@ RUN go get github.com/uudashr/gopkgs/v2/cmd/gopkgs \
   golang.org/x/tools/gopls
 
 # echo インストール
-RUN go mod init echo_app \
-  && go get github.com/labstack/echo/v4 \
-  github.com/pilu/fresh
-
+# RUN go mod init echo_app
+# RUN go get github.com/labstack/echo/v4
