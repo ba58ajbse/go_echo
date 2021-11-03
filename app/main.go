@@ -41,15 +41,29 @@ func getUsers(c echo.Context) error {
 	return c.JSON(http.StatusOK, users)
 }
 
+func getUser(c echo.Context) error {
+	var user User
+
+	id := c.Param("id")
+	err := db.QueryRow("SELECT * FROM users WHERE id = ?", id).Scan(&user.Id, &user.Name, &user.Email)
+
+	switch {
+	case err == sql.ErrNoRows:
+		return c.JSON(http.StatusOK, "no record.")
+	case err != nil:
+		panic(err.Error())
+	default:
+		return c.JSON(http.StatusOK, user)
+	}
+}
+
 func main() {
 	e := echo.New()
 	db = database.Connect()
 	defer db.Close()
 
-	e.GET("/", func(c echo.Context) error {
-		return c.String(http.StatusOK, "Hello, Echo World!")
-	})
-	e.GET("/hello", hello)
+	e.GET("/", hello)
 	e.GET("/users", getUsers)
+	e.GET("/users/:id", getUser)
 	e.Logger.Fatal(e.Start(":8080"))
 }

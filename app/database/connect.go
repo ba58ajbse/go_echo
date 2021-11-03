@@ -4,14 +4,12 @@ import (
 	"database/sql"
 	"fmt"
 	"os"
+	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
 )
 
-// var DB *gorm.DB
-
-// func Connect() *gorm.DB {
 func Connect() *sql.DB {
 	err := godotenv.Load("../.env")
 	if err != nil {
@@ -25,10 +23,17 @@ func Connect() *sql.DB {
 
 	dsn := db_user + ":" + db_pass + "@tcp(" + db_host + ":3306)/" + db_name
 
-	// DB, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	DB, err := sql.Open("mysql", dsn)
 	if err != nil {
-		fmt.Println(err.Error())
+		panic(err.Error())
+	}
+	DB.SetConnMaxLifetime(time.Minute * 3)
+	DB.SetMaxOpenConns(10)
+	DB.SetMaxIdleConns(10)
+
+	err = DB.Ping()
+	if err != nil {
+		panic(err.Error())
 	}
 
 	return DB
