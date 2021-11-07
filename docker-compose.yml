@@ -10,8 +10,11 @@ services:
     volumes:
       - .:/go/src
     command: /bin/bash
+    environment:
+      GO_ENV: "development"
     depends_on:
       - db
+      - test_db
 
   db:
     build:
@@ -23,7 +26,28 @@ services:
       - ./docker/mysql/data:/var/lib/mysql
       - ./docker/mysql/log:/var/log/mysql
       - ./docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./docker/mysql/initdb.d:/docker-entrypoint-initdb.d
     environment:
       MYSQL_DATABASE: ${DB_NAME}
-      MYSQL_ROOT_PASSWORD: ${DB_PASS}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASS}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASS}
+      TZ: Asia/Tokyo
+
+  test_db:
+    build:
+      context: .
+      dockerfile: ./docker/mysql/Dockerfile
+    ports:
+      - 3306:3306
+    volumes:
+      - ./docker/mysql/data_test:/var/lib/mysql
+      - ./docker/mysql/log_test:/var/log/mysql
+      - ./docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./docker/mysql/initdb.d:/docker-entrypoint-initdb.d
+    environment:
+      MYSQL_DATABASE: ${TEST_DB_NAME}
+      MYSQL_ROOT_PASSWORD: ${TEST_DB_ROOT_PASS}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASS}
       TZ: Asia/Tokyo

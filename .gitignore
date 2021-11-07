@@ -2,5 +2,5 @@
 
 tmp
 
-docker/mysql/data
-docker/mysql/log
+docker/mysql/data*
+docker/mysql/log*
