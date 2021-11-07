@@ -39,7 +39,7 @@ services:
       context: .
       dockerfile: ./docker/mysql/Dockerfile
     ports:
-      - 3306:3306
+      - 3316:3316
     volumes:
       - ./docker/mysql/data_test:/var/lib/mysql
       - ./docker/mysql/log_test:/var/log/mysql

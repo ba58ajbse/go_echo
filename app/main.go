@@ -2,7 +2,7 @@ package main
 
 import (
 	"database/sql"
-	"echo_app/app/database"
+	"echo_app/app/model"
 	"net/http"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -22,45 +22,23 @@ func hello(c echo.Context) error {
 }
 
 func getUsers(c echo.Context) error {
-	users := []User{}
-	rows, err := db.Query("SELECT * FROM users")
-	if err != nil {
-		panic(err.Error())
-	}
-	defer rows.Close()
-
-	for rows.Next() {
-		var user User
-		err := rows.Scan(&user.Id, &user.Name, &user.Email)
-		if err != nil {
-			panic(err.Error())
-		}
-		users = append(users, user)
-	}
+	users := model.Find(&model.User{})
 
 	return c.JSON(http.StatusOK, users)
 }
 
 func getUser(c echo.Context) error {
-	var user User
-
 	id := c.Param("id")
-	err := db.QueryRow("SELECT * FROM users WHERE id = ?", id).Scan(&user.Id, &user.Name, &user.Email)
+	user := model.Select(&model.User{}, id)
 
-	switch {
-	case err == sql.ErrNoRows:
-		return c.JSON(http.StatusOK, "no record.")
-	case err != nil:
-		panic(err.Error())
-	default:
-		return c.JSON(http.StatusOK, user)
-	}
+	return c.JSON(http.StatusOK, user)
 }
 
 func main() {
 	e := echo.New()
-	db = database.Connect()
-	defer db.Close()
+
+	model.DBInit()
+	defer model.DBClose()
 
 	e.GET("/", hello)
 	e.GET("/users", getUsers)
