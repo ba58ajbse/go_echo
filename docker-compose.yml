@@ -10,6 +10,8 @@ services:
     volumes:
       - .:/go/src
     command: /bin/bash
+    environment:
+      GO_ENV: "development"
     depends_on:
       - db
       - test_db
@@ -37,7 +39,7 @@ services:
       context: .
       dockerfile: ./docker/mysql/Dockerfile
     ports:
-      - 3316:3306
+      - 3306:3306
     volumes:
       - ./docker/mysql/data_test:/var/lib/mysql
       - ./docker/mysql/log_test:/var/log/mysql

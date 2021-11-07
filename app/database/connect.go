@@ -16,8 +16,8 @@ func Connect() *sql.DB {
 		fmt.Println(err)
 	}
 
-	db_user := os.Getenv("DB_USER")
-	db_pass := os.Getenv("DB_PASS")
+	db_user := "root"
+	db_pass := os.Getenv("DB_ROOT_PASS")
 	db_name := os.Getenv("DB_NAME")
 	db_host := os.Getenv("DB_HOST")
 
