@@ -18,6 +18,7 @@ RUN go get github.com/uudashr/gopkgs/v2/cmd/gopkgs \
   golang.org/x/lint/golint \
   golang.org/x/tools/gopls
 
+RUN go get github.com/cosmtrek/air
 # echo インストール
 # RUN go mod init echo_app
 # RUN go get github.com/labstack/echo/v4

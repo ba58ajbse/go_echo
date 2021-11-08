@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"echo_app/app/handlers"
 	"echo_app/app/model"
 	"net/http"
 
@@ -21,19 +22,6 @@ func hello(c echo.Context) error {
 	return c.String(http.StatusOK, "Hello, World!")
 }
 
-func getUsers(c echo.Context) error {
-	users := model.Find(&model.User{})
-
-	return c.JSON(http.StatusOK, users)
-}
-
-func getUser(c echo.Context) error {
-	id := c.Param("id")
-	user := model.Select(&model.User{}, id)
-
-	return c.JSON(http.StatusOK, user)
-}
-
 func main() {
 	e := echo.New()
 
@@ -41,7 +29,8 @@ func main() {
 	defer model.DBClose()
 
 	e.GET("/", hello)
-	e.GET("/users", getUsers)
-	e.GET("/users/:id", getUser)
+	e.GET("/users", handlers.GetUsers)
+	e.GET("/users/:id", handlers.GetUser)
+
 	e.Logger.Fatal(e.Start(":8080"))
 }

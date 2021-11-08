@@ -6,16 +6,16 @@ type User struct {
 	Email string `json:"email"`
 }
 
-func Find(u *User) []User {
+func Find(u *User) ([]User, error) {
 	var users []User
-	db.Where(u).Find(&users)
+	err := db.Where(u).Find(&users).Error
 
-	return users
+	return users, err
 }
 
-func Select(u *User, id string) User {
+func Select(u *User, id string) (User, error) {
 	var user User
-	db.First(&user, id)
+	err := db.First(&user, id).Error
 
-	return user
+	return user, err
 }
